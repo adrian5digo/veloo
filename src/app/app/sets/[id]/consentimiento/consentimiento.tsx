@@ -1,6 +1,6 @@
 "use client";
 
-import { CaretLeftIcon } from "@phosphor-icons/react/dist/ssr";
+import { CaretLeftIcon, CheckCircleIcon, ImagesIcon, UserIcon, UsersIcon, IdentificationCardIcon, CameraIcon, SignatureIcon, ShieldCheckIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -118,19 +118,20 @@ export function Consentimiento({
 
       <div className="flex flex-col gap-2 px-6 pt-1">
         <h1 className="m-0 font-display text-[28px] leading-[1.15] font-semibold tracking-[-0.01em]">
-          Ya casi está tu set
+          ¿Quién aparece?
         </h1>
-        <p className="m-0 text-sm leading-normal text-pretty text-muted">
-          Tus fotos ya están guardadas. Confirma quién aparece y marca la casilla para terminar.
-        </p>
+        <ol aria-label="Pasos para crear un set" className="m-0 mt-2 flex list-none items-center gap-3 p-0 text-[13px] font-semibold">
+          <li className="flex items-center gap-2 text-muted"><CheckCircleIcon size={22} weight="fill" aria-hidden /> Fotos guardadas</li>
+          <li aria-hidden className="h-px flex-1 bg-line" />
+          <li aria-current="step" className="flex items-center gap-2 text-accent-ink"><UsersIcon size={22} weight="bold" aria-hidden /> Confirmar</li>
+        </ol>
       </div>
 
-      <h2 className="mx-5 mb-0 mt-5 text-base font-bold">¿Quién aparece en las fotos?</h2>
-      <div role="radiogroup" aria-label="¿Quién aparece en las fotos?" className="grid gap-3 px-5 pt-3">
-        <OpcionGrande seleccionada={!conOtras} onSelect={() => elegir(false)} disabled={ocupado} detalle="No necesitas pedirle una firma a nadie.">
+      <div role="radiogroup" aria-label="¿Quién aparece en las fotos?" className="grid gap-3 px-5 pt-5">
+        <OpcionGrande seleccionada={!conOtras} onSelect={() => elegir(false)} disabled={ocupado} icono={<UserIcon size={28} weight="bold" aria-hidden />}>
           Solo aparezco yo
         </OpcionGrande>
-        <OpcionGrande seleccionada={conOtras} onSelect={() => elegir(true)} disabled={ocupado} detalle="Cada persona debe ser mayor de 18 y firmar antes de publicar.">
+        <OpcionGrande seleccionada={conOtras} onSelect={() => elegir(true)} disabled={ocupado} icono={<UsersIcon size={28} weight="bold" aria-hidden />} detalle="Mayores de 18, con firma">
           Aparece alguien más
         </OpcionGrande>
       </div>
@@ -190,11 +191,11 @@ export function Consentimiento({
           </Boton>
 
           <div className="flex flex-col gap-2 rounded-[22px] bg-surface-2 p-4 text-sm">
-            <span className="font-semibold">Lo que recibirá</span>
-            {["Foto de su INE, frente y reverso", "Selfie en vivo", "Firma de consentimiento para este set"].map(
-              (t, i) => (
-                <span key={t} className="flex gap-2 text-muted">
-                  <span className="font-semibold text-accent-ink">{i + 1}</span>
+            <span className="font-semibold">Cada persona necesita</span>
+            {([[IdentificationCardIcon, "INE: frente y reverso"], [CameraIcon, "Selfie en vivo"], [SignatureIcon, "Firma para este set"]] as const).map(
+              ([Icono, t]) => (
+                <span key={t} className="flex items-center gap-2 text-muted">
+                  <Icono size={20} weight="bold" className="text-accent-ink" aria-hidden />
                   {t}
                 </span>
               ),
@@ -210,7 +211,12 @@ export function Consentimiento({
           onChange={(e) => setDeclaro(e.target.checked)}
           className="mt-px size-5 flex-none accent-accent"
         />
-        Confirmo que no hay desnudos ni contenido sexual, que todas las personas son mayores de 18 y aceptaron aparecer, y que tengo los derechos de estas fotos.
+        <span className="flex flex-col gap-2">
+          <span className="font-bold">Confirmo que:</span>
+          <span className="flex items-center gap-2"><ShieldCheckIcon size={20} weight="bold" className="shrink-0 text-accent-ink" aria-hidden /> No hay desnudos ni contenido sexual.</span>
+          <span className="flex items-center gap-2"><UsersIcon size={20} weight="bold" className="shrink-0 text-accent-ink" aria-hidden /> Todas las personas son mayores de 18 y aceptaron aparecer.</span>
+          <span className="flex items-center gap-2"><ImagesIcon size={20} weight="bold" className="shrink-0 text-accent-ink" aria-hidden /> Tengo los derechos de las fotos.</span>
+        </span>
       </label>
 
       <ZonaCTA>
@@ -218,7 +224,7 @@ export function Consentimiento({
         <Boton onClick={enviar} disabled={bloqueado}>
           {enviando ? "Guardando…" : faltanFirmas ? "Faltan firmas para continuar" : publicacionDirecta ? "Publicar mi set" : "Enviar mi set a revisión"}
         </Boton>
-        <p className="m-0 text-center text-[13px] text-muted">{faltanFirmas ? "Envía el enlace a cada persona y vuelve cuando todas hayan firmado." : !declaro ? "Marca la casilla de confirmación para terminar." : publicacionDirecta ? "Al publicar podrás copiar el enlace y preparar tu historia." : "Te avisaremos cuando termine la revisión. Tus fotos quedan guardadas."}</p>
+        {(faltanFirmas || !declaro) && <p className="m-0 text-center text-[13px] text-muted">{faltanFirmas ? "Comparte los links para reunir las firmas." : "Marca la confirmación para terminar."}</p>}
       </ZonaCTA>
     </main>
   );

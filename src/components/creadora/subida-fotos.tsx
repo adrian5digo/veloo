@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusIcon, WarningIcon, XIcon } from "@phosphor-icons/react/dist/ssr";
+import { HandTapIcon, ImagesIcon, LockIcon, PlusIcon, WarningIcon, XIcon } from "@phosphor-icons/react/dist/ssr";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { PildoraEstado, VeloRevelable } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -136,8 +136,9 @@ export function SubidaFotos({
           htmlFor={inputId}
           className={cn("flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[22px] border-[1.5px] border-dashed border-accent bg-accent-soft p-4 font-semibold text-accent-ink hover:bg-surface-2", items.length === 0 ? "col-span-4 min-h-36" : "aspect-square text-xs")}
         >
-          <PlusIcon weight="bold" size={22} aria-label="Agregar fotos" />
-          <span>{items.length ? "Agregar" : "Toca aquí para elegir tus fotos"}</span>
+          {items.length ? <PlusIcon weight="bold" size={22} aria-hidden /> : <ImagesIcon weight="bold" size={44} className="-rotate-6" aria-hidden />}
+          <span>{items.length ? "Agregar" : "Agregar fotos"}</span>
+          {!items.length && <span className="text-xs font-medium">Una o varias a la vez</span>}
         </label>
         <input
           id={inputId}
@@ -152,10 +153,8 @@ export function SubidaFotos({
         />
       </div>
 
-      <p className="m-0 text-xs text-muted">
-        {listos.length === 0
-          ? "Puedes elegir varias a la vez. Nosotros las protegemos con un velo."
-          : `${listos.length} ${listos.length === 1 ? "foto lista" : "fotos listas"}. La primera será la portada. Mantén presionada una foto para verla.`}
+      <p className="m-0 flex items-center gap-1.5 text-xs text-muted">
+        {listos.length === 0 ? <><LockIcon size={16} weight="bold" aria-hidden /> Protegidas con velo</> : <><HandTapIcon size={18} weight="bold" aria-hidden /> Mantén presionada para ver <span className="ml-auto">{listos.length} {listos.length === 1 ? "foto" : "fotos"}</span></>}
       </p>
 
       {errores.length > 0 && (

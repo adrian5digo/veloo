@@ -1,6 +1,6 @@
 "use client";
 
-import { XIcon } from "@phosphor-icons/react/dist/ssr";
+import { CheckCircleIcon, ImagesIcon, UsersIcon, XIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -9,7 +9,6 @@ import { Boton, Campo, Chips, ZonaCTA } from "@/components/ui";
 import { cifra, netoCreadora, precio } from "@/lib/dinero";
 import type { MedioSubido } from "@/lib/medios";
 import { guardarBorrador } from "./acciones";
-import { CabeceraCreadora } from "@/components/creadora/cabecera";
 
 const SUGERIDOS = ["99", "149", "199"] as const;
 
@@ -45,16 +44,22 @@ export function NuevoSet() {
         <span className="text-[13px] text-muted">1 de 2</span>
       </header>
 
-      <CabeceraCreadora titulo="Crea tu set" detalle="Un set es un grupo de fotos que vendes juntas. Primero agrega las fotos, su nombre y el precio." />
+      <div className="px-5 pb-5 pt-1">
+        <h1 className="m-0 font-display text-[28px] font-semibold">Crea tu set</h1>
+        <ol aria-label="Pasos para crear un set" className="m-0 mt-3 flex list-none items-center gap-3 p-0 text-[13px] font-semibold">
+          <li aria-current="step" className="flex items-center gap-2 text-accent-ink"><ImagesIcon size={22} weight="bold" aria-hidden /> Fotos y precio</li>
+          <li aria-hidden className="h-px flex-1 bg-line" />
+          <li className="flex items-center gap-2 text-muted"><UsersIcon size={22} weight="bold" aria-hidden /> Confirmar</li>
+        </ol>
+      </div>
 
       <div className="px-5">
-        <h2 className="mb-3 text-base font-bold">1. Agrega tus fotos</h2>
+        <h2 className="mb-3 text-base font-bold">Tus fotos</h2>
         <SubidaFotos onChange={setMedios} onSubiendo={setSubiendo} />
       </div>
 
       <Campo
-        label="2. Ponle un nombre a tu set"
-        ayuda="Este nombre lo verán tus compradores. Puedes escribir algo sencillo, como Mis fotos de hoy."
+        label="Nombre del set"
         className="px-5 pt-[22px]"
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
@@ -64,8 +69,7 @@ export function NuevoSet() {
 
       <div className="flex flex-col gap-2 px-5 pt-[18px]">
         <Campo
-          label="3. Elige cuánto cuesta todo el set"
-          ayuda="El comprador paga una sola vez por todas las fotos. Puedes tocar un precio sugerido o escribir otro."
+          label="Precio por todas las fotos"
           inputMode="numeric"
           value={monto}
           onChange={(e) => setMonto(e.target.value.replace(/\D/g, "").slice(0, 5))}
@@ -80,16 +84,23 @@ export function NuevoSet() {
         />
         {valor > 0 && (
           <p className="m-0 text-[13px] text-muted">
-            Tú recibes <b className="font-semibold text-text">{cifra(netoCreadora(valor))} MXN</b> por venta. Veloo conserva el 40%.
+            Tú recibes <b className="font-semibold text-text">{cifra(netoCreadora(valor))} MXN</b> <span className="ml-2">Comisión 40%</span>
           </p>
         )}
       </div>
 
       <ZonaCTA>
-        <p className="m-0 text-center text-[13px] text-muted" aria-live="polite">{subiendo ? "Espera a que terminen de subir tus fotos." : !medios.length ? "Agrega al menos una foto para continuar." : !titulo.trim() ? "Escribe el nombre de tu set para continuar." : !(valor > 0) ? "Escribe un precio mayor a $0 para continuar." : "En el siguiente paso confirmas quién aparece. Aún no se publica."}</p>
+        <div aria-live="polite" className="flex flex-wrap justify-center gap-4 text-[13px]">
+          {[["Fotos", medios.length > 0 && !subiendo], ["Nombre", titulo.trim() !== ""], ["Precio", valor > 0]].map(([label, completo]) => (
+            <span key={String(label)} className={`flex items-center gap-1.5 ${completo ? "text-accent-ink" : "text-muted"}`}>
+              <CheckCircleIcon size={18} weight={completo ? "fill" : "regular"} aria-hidden />
+              <span className="sr-only">{completo ? "Listo:" : "Falta:"} </span>{label}
+            </span>
+          ))}
+        </div>
         {error && <p className="m-0 text-[13px] font-semibold text-bad">{error}</p>}
         <Boton onClick={continuar} disabled={!listo || guardando}>
-          {guardando ? "Guardando tus fotos…" : "Continuar al último paso"}
+          {guardando ? "Guardando…" : subiendo ? "Subiendo fotos…" : "Continuar"}
         </Boton>
       </ZonaCTA>
     </main>

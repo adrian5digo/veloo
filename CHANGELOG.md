@@ -6,6 +6,11 @@ Cambios de Veloo, del más reciente al más antiguo. Formato basado en [Keep a C
 
 ### 2026-10-23
 
+#### Creación de set más visual
+- Los dos pasos muestran progreso con iconos. Se retiran explicaciones repetidas y se acortan nombres de campos y botones; Fotos, Nombre y Precio indican visualmente qué está listo.
+- La subida destaca el selector de fotos con una ilustración de Phosphor y conserva la etiqueta de portada y la indicación de mantener presionado para ver.
+- Las opciones de personas incorporan iconos. La declaración conserva sus condiciones en tres puntos breves; los requisitos de firma aparecen solo al elegir otras personas.
+
 #### Crear y compartir un set con menos dudas
 - Paso 1: explica qué es un set, cómo agregar fotos, cuál será la portada y que el precio cubre todas las fotos. El campo de nombre pide escribir el título en vez de mostrar «Mazunte» como ejemplo. El botón indica qué falta para continuar.
 - Paso 2: «Solo aparezco yo» y «Aparece alguien más» usan la opción grande compartida, con fondo rosa y marca visible al seleccionar. Si falla el guardado, la selección vuelve al valor anterior y se muestra un error. La creadora piloto ve «Publicar mi set»; al terminar llega a su enlace e imagen para compartir.
