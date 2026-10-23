@@ -27,6 +27,7 @@ export function Consentimiento({
   conOtrasInicial,
   motivoRechazo,
   personas,
+  publicacionDirecta,
 }: {
   setId: string;
   titulo: string;
@@ -34,6 +35,7 @@ export function Consentimiento({
   /** Si lo rechazaron (E4), el texto exacto del motivo. */
   motivoRechazo: string | null;
   personas: Persona[];
+  publicacionDirecta: boolean;
 }) {
   const router = useRouter();
   const [conOtras, setConOtras] = useState(conOtrasInicial);
@@ -59,7 +61,16 @@ export function Consentimiento({
   function elegir(si: boolean) {
     if (si === conOtras) return;
     setConOtras(si);
-    correr(() => marcarOtrasPersonas(setId, si));
+    setError(undefined);
+    iniciar(async () => {
+      try {
+        const r = await marcarOtrasPersonas(setId, si);
+        if (!r.ok) { setConOtras(!si); setError(r.error); }
+      } catch {
+        setConOtras(!si);
+        setError("No pudimos guardar tu selección. Tus fotos siguen guardadas; vuelve a elegir.");
+      }
+    });
   }
 
   function agregar() {
@@ -75,7 +86,7 @@ export function Consentimiento({
     setEnviando(true);
     iniciar(async () => {
       const r = await enviarARevision(setId, declaro);
-      if (r.ok) return router.push("/app/boveda");
+      if (r.ok) return router.push(`/app/sets/${setId}`);
       setError(r.error);
       setEnviando(false);
     });
@@ -107,19 +118,20 @@ export function Consentimiento({
 
       <div className="flex flex-col gap-2 px-6 pt-1">
         <h1 className="m-0 font-display text-[28px] leading-[1.15] font-semibold tracking-[-0.01em]">
-          ¿Aparece otra persona?
+          Ya casi está tu set
         </h1>
         <p className="m-0 text-sm leading-normal text-pretty text-muted">
-          Cualquier persona visible tiene que ser mayor de edad y firmar su consentimiento antes de publicar.
+          Tus fotos ya están guardadas. Confirma quién aparece y marca la casilla para terminar.
         </p>
       </div>
 
-      <div role="radiogroup" aria-label="¿Aparece otra persona?" className="grid grid-cols-2 gap-2 px-5 pt-5">
-        <OpcionGrande seleccionada={!conOtras} onSelect={() => elegir(false)} className="min-h-14 rounded-full">
-          No, solo yo
+      <h2 className="mx-5 mb-0 mt-5 text-base font-bold">¿Quién aparece en las fotos?</h2>
+      <div role="radiogroup" aria-label="¿Quién aparece en las fotos?" className="grid gap-3 px-5 pt-3">
+        <OpcionGrande seleccionada={!conOtras} onSelect={() => elegir(false)} disabled={ocupado} detalle="No necesitas pedirle una firma a nadie.">
+          Solo aparezco yo
         </OpcionGrande>
-        <OpcionGrande seleccionada={conOtras} onSelect={() => elegir(true)} className="min-h-14 rounded-full">
-          Sí
+        <OpcionGrande seleccionada={conOtras} onSelect={() => elegir(true)} disabled={ocupado} detalle="Cada persona debe ser mayor de 18 y firmar antes de publicar.">
+          Aparece alguien más
         </OpcionGrande>
       </div>
 
@@ -204,9 +216,9 @@ export function Consentimiento({
       <ZonaCTA>
         {error && <p className="m-0 text-[13px] font-semibold text-bad">{error}</p>}
         <Boton onClick={enviar} disabled={bloqueado}>
-          {enviando ? "Enviando…" : faltanFirmas ? "Esperando firmas" : "Enviar a revisión"}
+          {enviando ? "Guardando…" : faltanFirmas ? "Faltan firmas para continuar" : publicacionDirecta ? "Publicar mi set" : "Enviar mi set a revisión"}
         </Boton>
-        <p className="m-0 text-center text-xs text-muted">Revisamos cada set antes de publicarlo (menos de 2 h)</p>
+        <p className="m-0 text-center text-[13px] text-muted">{faltanFirmas ? "Envía el enlace a cada persona y vuelve cuando todas hayan firmado." : !declaro ? "Marca la casilla de confirmación para terminar." : publicacionDirecta ? "Al publicar podrás copiar el enlace y preparar tu historia." : "Te avisaremos cuando termine la revisión. Tus fotos quedan guardadas."}</p>
       </ZonaCTA>
     </main>
   );

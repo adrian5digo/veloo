@@ -25,7 +25,7 @@ function Pestana({
       aria-current={activa ? "page" : undefined}
       className={cn(
         "relative flex min-h-11 flex-col items-center justify-center gap-[3px] no-underline",
-        activa ? "font-bold text-text! hover:text-text!" : "font-medium text-muted! hover:text-text!",
+        activa ? "font-bold text-accent-ink! hover:text-accent-ink!" : "font-medium text-muted! hover:text-text!",
       )}
     >
       {Icono && <Icono weight="bold" size={22} />}

@@ -45,24 +45,27 @@ export function NuevoSet() {
         <span className="text-[13px] text-muted">1 de 2</span>
       </header>
 
-      <CabeceraCreadora titulo="Algo nuevo, muy tuyo" detalle="Reúne tus fotos, elige un título y ponle precio a tu próximo set." />
+      <CabeceraCreadora titulo="Crea tu set" detalle="Un set es un grupo de fotos que vendes juntas. Primero agrega las fotos, su nombre y el precio." />
 
       <div className="px-5">
+        <h2 className="mb-3 text-base font-bold">1. Agrega tus fotos</h2>
         <SubidaFotos onChange={setMedios} onSubiendo={setSubiendo} />
       </div>
 
       <Campo
-        label="Título"
+        label="2. Ponle un nombre a tu set"
+        ayuda="Este nombre lo verán tus compradores. Puedes escribir algo sencillo, como Mis fotos de hoy."
         className="px-5 pt-[22px]"
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
         maxLength={60}
-        placeholder="Mazunte"
+        placeholder="Escribe el nombre de tu set"
       />
 
       <div className="flex flex-col gap-2 px-5 pt-[18px]">
         <Campo
-          label="Precio"
+          label="3. Elige cuánto cuesta todo el set"
+          ayuda="El comprador paga una sola vez por todas las fotos. Puedes tocar un precio sugerido o escribir otro."
           inputMode="numeric"
           value={monto}
           onChange={(e) => setMonto(e.target.value.replace(/\D/g, "").slice(0, 5))}
@@ -77,15 +80,16 @@ export function NuevoSet() {
         />
         {valor > 0 && (
           <p className="m-0 text-[13px] text-muted">
-            Recibes <b className="font-semibold text-text">{cifra(netoCreadora(valor))}</b> por venta · comisión 20%
+            Tú recibes <b className="font-semibold text-text">{cifra(netoCreadora(valor))} MXN</b> por venta. Veloo conserva el 40%.
           </p>
         )}
       </div>
 
       <ZonaCTA>
+        <p className="m-0 text-center text-[13px] text-muted" aria-live="polite">{subiendo ? "Espera a que terminen de subir tus fotos." : !medios.length ? "Agrega al menos una foto para continuar." : !titulo.trim() ? "Escribe el nombre de tu set para continuar." : !(valor > 0) ? "Escribe un precio mayor a $0 para continuar." : "En el siguiente paso confirmas quién aparece. Aún no se publica."}</p>
         {error && <p className="m-0 text-[13px] font-semibold text-bad">{error}</p>}
         <Boton onClick={continuar} disabled={!listo || guardando}>
-          {guardando ? "Guardando…" : "Continuar"}
+          {guardando ? "Guardando tus fotos…" : "Continuar al último paso"}
         </Boton>
       </ZonaCTA>
     </main>

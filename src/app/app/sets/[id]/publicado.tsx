@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Boton, DatoCopiable, ZonaCTA } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { dibujarHistoria, ESTILOS, pngDe, type DatosHistoria } from "@/lib/historia";
-import { linkPublico, linkVisible } from "@/lib/links";
+import { linkPublico } from "@/lib/links";
 import { useOrigen } from "@/lib/use-origen";
 
 /** C5 · Publicado: link copiable y plantilla de historia en 4 estilos. */
@@ -24,11 +24,25 @@ export function Publicado({
   const canvas = useRef<HTMLCanvasElement>(null);
   const [estilo, setEstilo] = useState(0);
   const [aviso, setAviso] = useState<string>();
+  const [lista, setLista] = useState(false);
+  const [ocupada, setOcupada] = useState(false);
+  const [error, setError] = useState<string>();
   const origen = useOrigen();
   const link = linkPublico(usuario, slug, origen);
 
   useEffect(() => {
-    if (canvas.current) dibujarHistoria(canvas.current, ESTILOS[estilo], historia);
+    let vigente = true;
+    const temporal = document.createElement("canvas");
+    dibujarHistoria(temporal, ESTILOS[estilo], historia).then(() => {
+      if (!vigente || !canvas.current) return;
+      canvas.current.width = temporal.width;
+      canvas.current.height = temporal.height;
+      canvas.current.getContext("2d")?.drawImage(temporal, 0, 0);
+      setLista(true);
+    }).catch(() => {
+      if (vigente) setError("No pudimos preparar la imagen. Tu set sigue publicado; puedes copiar su enlace o elegir otro estilo para intentar de nuevo.");
+    });
+    return () => { vigente = false; };
   }, [estilo, historia]);
 
   async function archivo() {
@@ -47,21 +61,30 @@ export function Publicado({
 
   async function compartir() {
     setAviso(undefined);
+    setOcupada(true);
+    let copiado = false;
     try {
       await navigator.clipboard.writeText(link);
+      copiado = true;
     } catch {
       // Sin portapapeles: el link sigue visible arriba para copiarlo a mano.
     }
-    const f = await archivo();
-    if (navigator.canShare?.({ files: [f] })) {
-      try {
-        await navigator.share({ files: [f] });
-      } catch {
-        // Cerró la hoja de compartir: no es un error.
+    try {
+      const f = await archivo();
+      if (navigator.canShare?.({ files: [f] })) {
+        try {
+          await navigator.share({ files: [f] });
+        } catch {
+          setAviso(copiado ? "El enlace quedó copiado. Puedes volver a compartir la imagen cuando quieras." : "Puedes copiar el enlace con el botón de arriba y volver a compartir.");
+        }
+      } else {
+        descargar(f);
+        setAviso(copiado ? "Enlace copiado e imagen guardada. Abre Instagram, sube la imagen y pega el enlace en el sticker Enlace." : "Imagen guardada. Copia el enlace con el botón de arriba antes de abrir Instagram.");
       }
-    } else {
-      descargar(f);
-      setAviso("Copiamos el link y guardamos la imagen. Súbela como historia desde Instagram.");
+    } catch {
+      setError("No pudimos guardar la imagen. Tu set sigue publicado; vuelve a intentar o comparte su enlace.");
+    } finally {
+      setOcupada(false);
     }
   }
 
@@ -77,7 +100,12 @@ export function Publicado({
         </Link>
       </header>
 
-      <DatoCopiable valor={link} mostrar={linkVisible(usuario, slug)} className="px-5" />
+      <section className="flex flex-col gap-3 px-5 pt-3">
+        <h2 className="m-0 font-display text-[26px] font-semibold">Comparte tu set</h2>
+        <p className="m-0 text-sm text-muted">1. Copia este enlace. Lleva directo a las fotos que acabas de publicar.</p>
+        <DatoCopiable destacado label="Enlace para comprar este set" valor={link} />
+        <p className="mb-0 mt-3 text-sm font-semibold">2. Elige la imagen para tu historia</p>
+      </section>
 
       <div className="flex items-start gap-3.5 px-5 pt-[18px]">
         {/* Inclinada a propósito: es la tarjeta que se lleva a Instagram. */}
@@ -94,29 +122,31 @@ export function Publicado({
               type="button"
               role="radio"
               aria-checked={i === estilo}
-              onClick={() => setEstilo(i)}
+              onClick={() => { if (i !== estilo) { setLista(false); setError(undefined); setEstilo(i); } }}
               className={cn(
                 "flex min-h-12 cursor-pointer items-center gap-2.5 rounded-full border-[1.5px] bg-surface px-3 text-sm font-semibold text-text",
-                i === estilo ? "border-accent" : "border-line",
+                i === estilo ? "border-accent bg-accent-soft!" : "border-line",
               )}
             >
               <span className="size-[22px] flex-none rounded-full border border-line" style={{ background: e.fondo }} />
               {e.nombre}
+              {i === estilo && <CheckIcon size={18} weight="bold" className="ml-auto text-accent-ink" aria-hidden />}
             </button>
           ))}
         </div>
       </div>
 
       <p className="m-0 px-5 pt-3.5 text-[13px] leading-normal text-pretty text-muted">
-        Al compartir copiamos el link. En Instagram agrega el sticker “Enlace”, pégalo y colócalo sobre el recuadro.
+        3. Guarda o comparte la imagen. En tu historia de Instagram agrega el sticker “Enlace” y pega el enlace del set. La imagen por sí sola no lleva a la compra.
       </p>
 
       <ZonaCTA>
+        {error && <p role="alert" className="m-0 text-[13px] text-bad">{error}</p>}
         {aviso && <p className="m-0 text-[13px] font-semibold text-ok">{aviso}</p>}
-        <Boton onClick={compartir} icono={<InstagramLogoIcon weight="bold" size={18} />}>
-          Compartir en Instagram
+        <Boton onClick={compartir} disabled={!lista || ocupada} icono={<InstagramLogoIcon weight="bold" size={18} />}>
+          {ocupada ? "Preparando…" : !lista ? "Preparando imagen…" : "Compartir imagen y copiar enlace"}
         </Boton>
-        <Boton variante="secundario" onClick={async () => descargar(await archivo())}>
+        <Boton variante="secundario" disabled={!lista || ocupada} onClick={async () => { try { descargar(await archivo()); } catch { setError("No pudimos guardar la imagen. Tu set sigue publicado; vuelve a intentar."); } }}>
           Guardar imagen
         </Boton>
       </ZonaCTA>

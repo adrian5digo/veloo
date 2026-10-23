@@ -91,7 +91,7 @@ export function Metricas({ ordenes }: { ordenes: OrdenMetrica[] }) {
         <div className={celda}>
           <div className="text-[13px] text-muted">Comisión Veloo</div>
           <div className="mt-1 font-display text-[34px] font-semibold">{cifra(m.comision)}</div>
-          <div className="mt-1 text-[13px] text-muted">20%, antes de procesamiento</div>
+          <div className="mt-1 text-[13px] text-muted">Comisiones registradas, antes de procesamiento</div>
         </div>
         <div className={celda}>
           <div className="text-[13px] text-muted">Creadoras activas</div>

@@ -79,7 +79,7 @@ export default async function Page({ params }: PageProps<"/app/ventas/[id]">) {
           <dd className="m-0">{totalMXN(precio)}</dd>
         </div>
         <div className={fila}>
-          <dt>Comisión Veloo (20%)</dt>
+          <dt>Comisión Veloo ({precio > 0 ? Math.round(comision / precio * 100) : 0}%)</dt>
           <dd className="m-0">−{cifra(comision)}</dd>
         </div>
         <div className={`${fila} font-bold`}>

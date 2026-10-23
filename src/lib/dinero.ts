@@ -21,9 +21,10 @@ export function cifra(monto: number) {
   return `$${centavos.format(monto)}`;
 }
 
-export const COMISION = 0.2;
+export const COMISION = 0.4;
 
-/** Lo que recibe la creadora por venta, después del 20%. */
+/** Lo que recibe la creadora por venta, después del 40%. */
 export function netoCreadora(monto: number) {
-  return Math.round(monto * (1 - COMISION) * 100) / 100;
+  const centavos = Math.round(monto * 100);
+  return (centavos - Math.round(centavos * COMISION)) / 100;
 }

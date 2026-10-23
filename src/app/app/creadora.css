@@ -1,5 +1,6 @@
 .espacio-creadora { max-width: 1180px; margin: 0 auto; width: 100%; }
 .lateral-creadora { display: none; }
+.espacio-creadora nav a[aria-current="page"] svg { color: var(--accent); }
 .contenido-creadora { min-width: 0; }
 .marca-movil-creadora { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 480px; margin: auto; padding: 20px 20px 0; }
 .marca-movil-creadora a { color: var(--text); text-decoration: none; }

@@ -40,7 +40,7 @@ const SECCIONES = [
   {
     titulo: "Comisión y retiros",
     texto:
-      "Veloo cobra 20% de cada venta, procesamiento incluido. El saldo de cada venta se libera 7 días después por posibles contracargos. El retiro mínimo es de $200 y cambiar la CLABE pausa los retiros 24 horas.",
+      "Veloo cobra 40% de cada venta, procesamiento incluido. El saldo de cada venta se libera 7 días después por posibles contracargos. El retiro mínimo es de $200 y cambiar la CLABE pausa los retiros 24 horas.",
   },
   {
     titulo: "Reportes y retiro de contenido",

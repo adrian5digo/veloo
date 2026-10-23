@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { CheckCircleIcon, CircleIcon } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/cn";
 
 type Opcion<T extends string> = { valor: T; label: string };
@@ -97,6 +98,7 @@ export function OpcionGrande({
   icono,
   children,
   detalle,
+  disabled = false,
   className,
 }: {
   seleccionada: boolean;
@@ -105,6 +107,7 @@ export function OpcionGrande({
   children: ReactNode;
   /** Línea secundaria opcional (ej. "Paga en efectivo en 72 h"). */
   detalle?: ReactNode;
+  disabled?: boolean;
   className?: string;
 }) {
   return (
@@ -112,15 +115,17 @@ export function OpcionGrande({
       type="button"
       role="radio"
       aria-checked={seleccionada}
+      disabled={disabled}
       onClick={onSelect}
       className={cn(
-        "flex min-h-[60px] cursor-pointer items-center justify-center gap-2 rounded-[22px] border-[1.5px] bg-surface px-4 py-2.5 text-[15px] font-bold text-text",
-        seleccionada ? "border-accent" : "border-line",
+        "flex min-h-[60px] cursor-pointer items-center justify-center gap-2 rounded-[22px] border-[1.5px] px-4 py-2.5 text-[15px] font-bold disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-ink",
+        seleccionada ? "border-accent bg-accent-soft text-accent-ink" : "border-line bg-surface text-text",
         detalle != null && "flex-col gap-0.5",
         className,
       )}
     >
       <span className="flex items-center gap-2">
+        {seleccionada ? <CheckCircleIcon size={22} weight="fill" aria-hidden /> : <CircleIcon size={22} weight="bold" aria-hidden />}
         {icono}
         {children}
       </span>

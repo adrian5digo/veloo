@@ -1,5 +1,5 @@
 /**
- * Plantillas de historia de Instagram (H1–H4): 1080×1920, sin fotos.
+ * Plantillas de historia de Instagram (H1–H4): 1080×1920, con portada ya velada por el servidor.
  * Se dibujan en un canvas para que la vista previa y la imagen guardada sean la misma.
  * Estas paletas son los únicos hex permitidos fuera de los tokens.
  */
@@ -13,7 +13,7 @@ export const ESTILOS: Estilo[] = [
   { nombre: "Rosa", fondo: "#7a2c8f", tinta: "#fff7fa", tintaAvatar: "#7a2c8f", acento: "rgba(255,247,250,.85)" },
 ];
 
-export type DatosHistoria = { iniciales: string; usuario: string; detalle: string };
+export type DatosHistoria = { iniciales: string; usuario: string; detalle: string; portada?: string };
 
 export const ANCHO = 1080;
 export const ALTO = 1920;
@@ -43,6 +43,12 @@ function lineas(ctx: CanvasRenderingContext2D, texto: string, ancho: number) {
 export async function dibujarHistoria(canvas: HTMLCanvasElement, estilo: Estilo, datos: DatosHistoria) {
   const familia = familiaDisplay();
   await Promise.all(["500 44px", "600 150px"].map((f) => document.fonts.load(`${f} ${familia}`)));
+  const portada = datos.portada ? await new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("No se pudo cargar la portada"));
+    img.src = datos.portada!;
+  }) : null;
 
   canvas.width = ANCHO;
   canvas.height = ALTO;
@@ -70,38 +76,59 @@ export async function dibujarHistoria(canvas: HTMLCanvasElement, estilo: Estilo,
   ctx.fillText(`@${datos.usuario}`, MARGEN + 76 + 20, 300 + 40);
   ctx.textBaseline = "top";
 
-  // Kicker, título y detalle (top 640).
-  let y = 640;
+  // Kicker y título sobre la portada.
+  let y = 450;
   ctx.fillStyle = estilo.acento;
   ctx.font = fuente(600, 36);
   ctx.fillText("Recién subido", MARGEN, y);
   y += 36 + 28;
 
   ctx.fillStyle = estilo.tinta;
-  ctx.font = fuente(600, 150);
+  ctx.font = fuente(600, 108);
   if ("letterSpacing" in ctx) ctx.letterSpacing = "-6px";
   for (const l of lineas(ctx, "Nuevo set disponible", ANCHO - MARGEN * 2)) {
     ctx.fillText(l, MARGEN, y);
-    y += 147;
+    y += 108;
   }
   if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
-  y += 44;
-  ctx.font = fuente(500, 56);
-  ctx.fillText(datos.detalle, MARGEN, y);
+  // La imagen ya tiene velo irreversible; nunca se carga el original en el navegador.
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(MARGEN, 760, ANCHO - MARGEN * 2, 550, 44);
+  ctx.clip();
+  if (portada) {
+    const escala = Math.max(888 / portada.width, 550 / portada.height);
+    const w = portada.width * escala, h = portada.height * escala;
+    ctx.drawImage(portada, MARGEN + (888 - w) / 2, 760 + (550 - h) / 2, w, h);
+  } else {
+    ctx.fillStyle = estilo.acento;
+    ctx.globalAlpha = 0.2;
+    ctx.fillRect(MARGEN, 760, 888, 550);
+  }
+  ctx.restore();
+  // Candado dibujado, sin glifos de texto que dependan de una fuente de iconos.
+  ctx.fillStyle = "rgba(0,0,0,.28)";
+  ctx.beginPath(); ctx.arc(540, 1035, 62, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 7; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.arc(540, 1025, 19, Math.PI, 0); ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(511, 1025, 58, 44, 10); ctx.stroke();
+  ctx.font = fuente(500, 44);
+  ctx.fillStyle = estilo.tinta;
+  ctx.fillText(datos.detalle, MARGEN, 1350);
 
-  // Recuadro del sticker de enlace (888×170, top 1380).
+  // Recuadro del sticker de enlace.
   ctx.strokeStyle = estilo.acento;
   ctx.lineWidth = 6;
   ctx.setLineDash([26, 18]);
   ctx.beginPath();
-  ctx.roundRect(MARGEN, 1380, ANCHO - MARGEN * 2, 170, 32);
+  ctx.roundRect(MARGEN, 1460, ANCHO - MARGEN * 2, 170, 32);
   ctx.stroke();
   ctx.setLineDash([]);
   ctx.fillStyle = estilo.tinta;
   ctx.font = fuente(500, 36);
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("Pega aquí tu sticker de enlace", ANCHO / 2, 1380 + 85);
+  ctx.fillText("Pega aquí el sticker Enlace", ANCHO / 2, 1460 + 85);
 
   // Marca, fuera de los 250px inferiores.
   ctx.textAlign = "left";

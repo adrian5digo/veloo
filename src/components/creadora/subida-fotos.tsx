@@ -134,9 +134,10 @@ export function SubidaFotos({
         )}
         <label
           htmlFor={inputId}
-          className="grid aspect-square cursor-pointer place-items-center rounded-[14px] border-[1.5px] border-dashed border-line text-muted hover:bg-surface-2"
+          className={cn("flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[22px] border-[1.5px] border-dashed border-accent bg-accent-soft p-4 font-semibold text-accent-ink hover:bg-surface-2", items.length === 0 ? "col-span-4 min-h-36" : "aspect-square text-xs")}
         >
           <PlusIcon weight="bold" size={22} aria-label="Agregar fotos" />
+          <span>{items.length ? "Agregar" : "Toca aquí para elegir tus fotos"}</span>
         </label>
         <input
           id={inputId}
@@ -153,8 +154,8 @@ export function SubidaFotos({
 
       <p className="m-0 text-xs text-muted">
         {listos.length === 0
-          ? "Sube tus fotos normales. Les ponemos el velo nosotros."
-          : `${listos.length} ${listos.length === 1 ? "foto" : "fotos"} · se ven con velo hasta que mantienes presionado`}
+          ? "Puedes elegir varias a la vez. Nosotros las protegemos con un velo."
+          : `${listos.length} ${listos.length === 1 ? "foto lista" : "fotos listas"}. La primera será la portada. Mantén presionada una foto para verla.`}
       </p>
 
       {errores.length > 0 && (

@@ -67,7 +67,7 @@ export function Vitrina() {
           />
         </header>
 
-        <Seccion n="01" titulo="botones" nota="Primario con degradado, uno por pantalla. Secundario con borde. De texto en rosa oscuro, apagado o destructivo. Desactivado al 40%.">
+        <Seccion n="01" titulo="botones" nota="Primario con degradado, uno por pantalla. Secundario con borde. De texto en rosa oscuro, apagado o destructivo. Desactivado con opacidad reducida.">
           <Boton>Desbloquear por {precioMXN(149)}</Boton>
           <Boton variante="secundario">Guardar imagen</Boton>
           <div className="flex flex-wrap gap-2">
@@ -212,9 +212,9 @@ export function Vitrina() {
               <div className="flex flex-col gap-4 px-5 pt-4">
                 <div className="flex items-center gap-2.5">
                   <Avatar iniciales="VR" tamano={36} />
-                  <span className="text-sm text-muted">Recibes {precio(netoCreadora(149))} por venta · comisión 20%</span>
+                  <span className="text-sm text-muted">Recibes {precio(netoCreadora(149))} por venta · comisión 40%</span>
                 </div>
-                <Campo label="Título" defaultValue="Mazunte" />
+                <Campo label="Título" defaultValue="Mis fotos de hoy" />
               </div>
               <ZonaCTA>
                 <Boton>Mandar a revisión</Boton>

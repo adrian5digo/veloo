@@ -4,6 +4,7 @@ import { ID_MEDIO } from "@/lib/medios";
 import { creadoraActual } from "@/server/sesion";
 import { supabaseServidor } from "@/server/supabase";
 import { Consentimiento } from "./consentimiento";
+import { cobroDirectoPiloto } from "@/server/piloto";
 
 export const metadata: Metadata = { title: "Consentimiento · Veloo" };
 
@@ -36,6 +37,7 @@ export default async function Page({ params }: PageProps<"/app/sets/[id]/consent
   return (
     <Consentimiento
       setId={set.id}
+      publicacionDirecta={await cobroDirectoPiloto(creadora.id)}
       titulo={set.titulo}
       conOtrasInicial={set.con_otras_personas}
       motivoRechazo={set.estado === "rechazado" ? set.motivo_rechazo : null}

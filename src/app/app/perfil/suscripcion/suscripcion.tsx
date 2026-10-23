@@ -9,7 +9,7 @@ import { guardarSuscripcion } from "../acciones";
 
 const SUGERIDOS = ["99", "149", "199"] as const;
 
-/** C16 · Suscripción mensual con tokens (1 token = $1). Comisión 20%, como en los sets. */
+/** C16 · Suscripción mensual con tokens (1 token = $1). Comisión 40%, como en los sets. */
 export function Suscripcion({ tokens, activas, seRenuevan, neto30 }: { tokens: number | null; activas: number; seRenuevan: number; neto30: number }) {
   const router = useRouter();
   const [prendida, setPrendida] = useState(tokens !== null);
@@ -63,7 +63,7 @@ export function Suscripcion({ tokens, activas, seRenuevan, neto30 }: { tokens: n
           />
           {valido && valor > 0 && (
             <p className="m-0 text-[13px] text-muted">
-              Recibes <b className="font-semibold text-text">{cifra(netoCreadora(valor))}</b> por suscriptor al mes · comisión 20%
+              Recibes <b className="font-semibold text-text">{cifra(netoCreadora(valor))}</b> por suscriptor al mes · comisión 40%
             </p>
           )}
           {tokens !== null && valor !== tokens && (

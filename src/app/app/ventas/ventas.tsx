@@ -115,7 +115,7 @@ export function Ventas({
           <span className="icono-vacio-creadora" aria-hidden="true"><ChartBarIcon size={34} weight="bold" /></span>
           <h2>Tu primera venta tendrá su lugar aquí</h2>
           <p>
-            Publica un set y comparte su link con tus fans. Aquí verás tus ventas y el neto que te corresponde después de la comisión del 20%.
+            Publica un set y comparte su link con tus fans. Aquí verás tus ventas y el neto que te corresponde después de la comisión del 40%.
           </p>
           <Boton variante="secundario" href="/app/boveda" className="mt-4">
             Ir a mi bóveda

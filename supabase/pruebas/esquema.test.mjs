@@ -260,9 +260,10 @@ ok("fan bloqueado por la creadora no desbloquea", (await falla(FAN, `select * fr
 const d1 = (await como(FAN, `select * from public.desbloquear_con_tokens($1,'t1')`, [setB], "fan@correo.com")).rows[0];
 ok("desbloqueo crea orden nueva", d1.nueva === true);
 ok("descuenta 99 (quedan 201)", (await saldoT()) === 201);
-const ot = (await admin(`select metodo, estado, precio_centavos, neto_centavos, fan_id from public.ordenes where id=$1`, [d1.orden_id])).rows[0];
+const ot = (await admin(`select metodo, estado, precio_centavos, comision_centavos, neto_centavos, fan_id from public.ordenes where id=$1`, [d1.orden_id])).rows[0];
 ok("orden pagada con tokens a nombre del fan", ot.metodo === "tokens" && ot.estado === "pagada" && ot.fan_id === FAN);
-ok("creadora recibe neto 79.20 retenido", Number((await como(B, `select retenido_centavos from public.mi_saldo`)).rows[0].retenido_centavos) === 7920);
+ok("desbloqueo nuevo guarda comisión del 40%", ot.comision_centavos === 3960 && ot.neto_centavos === 5940);
+ok("creadora recibe neto 59.40 retenido (comisión 40%)", Number((await como(B, `select retenido_centavos from public.mi_saldo`)).rows[0].retenido_centavos) === 5940);
 ok("fan ve el set en Mis compras", (await como(FAN, `select metodo from public.mis_compras where set_id=$1`, [setB], "fan@correo.com")).rows[0]?.metodo === "tokens");
 const d2 = (await como(FAN, `select * from public.desbloquear_con_tokens($1,'t2')`, [setB], "fan@correo.com")).rows[0];
 ok("segundo desbloqueo no cobra", d2.nueva === false && d2.orden_id === d1.orden_id && (await saldoT()) === 201);
@@ -320,7 +321,8 @@ ok("precio mínimo 49 tokens", (await falla(B, `update public.creadoras set susc
 await como(B, `update public.creadoras set suscripcion_tokens=150 where id=$1`, [B]);
 ok("con 201 tokens se suscribe", !!(await como(FAN, `select public.suscribirse($1) v`, [B], CF)).rows[0].v);
 ok("descuenta 150 (quedan 51)", (await saldoT()) === 51);
-ok(`creadora recibe neto 120 retenido`, (await saldoB()) - retB0 === 12000);
+ok(`creadora recibe neto 90 retenido (comisión 40%)`, (await saldoB()) - retB0 === 9000);
+ok("suscripción nueva guarda comisión del 40%", Number((await admin(`select comision_centavos from public.cobros_suscripcion order by periodo_desde desc limit 1`)).rows[0].comision_centavos) === 6000);
 await como(FAN, `select public.suscribirse($1)`, [B], CF);
 ok("suscribirse otra vez no cobra", (await saldoT()) === 51);
 ok("creadora ve 1 suscriptora activa", (await como(B, `select activas from public.mis_suscriptores`)).rows[0].activas === 1);

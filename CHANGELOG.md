@@ -4,6 +4,18 @@ Cambios de Veloo, del más reciente al más antiguo. Formato basado en [Keep a C
 
 ## [Sin publicar]
 
+### 2026-10-23
+
+#### Crear y compartir un set con menos dudas
+- Paso 1: explica qué es un set, cómo agregar fotos, cuál será la portada y que el precio cubre todas las fotos. El campo de nombre pide escribir el título en vez de mostrar «Mazunte» como ejemplo. El botón indica qué falta para continuar.
+- Paso 2: «Solo aparezco yo» y «Aparece alguien más» usan la opción grande compartida, con fondo rosa y marca visible al seleccionar. Si falla el guardado, la selección vuelve al valor anterior y se muestra un error. La creadora piloto ve «Publicar mi set»; al terminar llega a su enlace e imagen para compartir.
+- La navegación marca en rosa el icono de la pestaña activa. La pantalla final identifica el enlace completo del set, ofrece «Copiar enlace del set» y explica que la historia de Instagram necesita el sticker «Enlace».
+- La historia incorpora la portada con un velo irreversible de desenfoque moderado, generado en servidor desde el original privado tras verificar que la creadora es dueña de la portada y que el set está publicado. La imagen descargada nunca incluye la versión nítida ni un enlace privado. La exportación espera a que termine de dibujarse.
+
+#### Comisión del 40%
+- Nuevas ventas directas y órdenes atendidas por servidor guardan 40% en centavos; los desbloqueos y renovaciones con tokens usan la migración `20261023064322_comision_cuarenta.sql`. La interfaz, el cálculo previo, Términos y el ejemplo de componentes muestran 40%. Los detalles de ventas anteriores leen la comisión efectivamente guardada, sin cambiar su historial.
+- Migración probada localmente con PGlite y aplicada al proyecto Supabase el 23 de octubre (`comision_cuarenta`, versión remota `20261023065126`). Confirmadas las dos funciones con 40%; no cambió el esquema de tipos ni se modificaron ventas pasadas. Pasaron `npm run test:db`, `npm run lint`, TypeScript y la compilación.
+
 ### 2026-10-22
 
 #### Pago directo preparado para modo real

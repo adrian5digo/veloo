@@ -19,7 +19,7 @@ export default async function Page({ params }: PageProps<"/app/sets/[id]">) {
   const [{ data: set, error: e1 }, { data: perfil, error: e2 }, { count, error: e3 }] = await Promise.all([
     supabase
       .from("sets")
-      .select("titulo, slug, estado, precio_centavos")
+      .select("titulo, slug, estado, precio_centavos, portada_id")
       .eq("id", id)
       .eq("creadora_id", creadora.id)
       .maybeSingle(),
@@ -41,7 +41,7 @@ export default async function Page({ params }: PageProps<"/app/sets/[id]">) {
       titulo={set.titulo}
       usuario={perfil.usuario}
       slug={set.slug}
-      historia={{ iniciales: iniciales(perfil.nombre || perfil.usuario), usuario: perfil.usuario, detalle }}
+      historia={{ iniciales: iniciales(perfil.nombre || perfil.usuario), usuario: perfil.usuario, detalle, portada: set.portada_id ? `/api/creadora/medios/${set.portada_id}/historia` : undefined }}
     />
   );
 }

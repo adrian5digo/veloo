@@ -85,7 +85,7 @@ export function procesador(): Procesador | null {
   return cuentaSpeiManual() ? speiManual : null;
 }
 
-export const COMISION = 0.2;
+export { COMISION } from "@/lib/dinero";
 
 /**
  * Confirma una orden pagada (lo llama el webhook del procesador). Idempotente.

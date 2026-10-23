@@ -186,6 +186,20 @@ export async function urlVista(id: string, creadoraId: string) {
   return data.signedUrl;
 }
 
+/** Portada para exportar a historias. Solo su dueña; siempre se entrega ya desenfocada, sin EXIF. */
+export async function portadaHistoria(id: string, creadoraId: string) {
+  const foto = await fotoDe(id, creadoraId);
+  if (!foto || foto.estado !== "lista" || !foto.set_id) return null;
+  const db = supabaseAdmin();
+  const { data: set, error: setError } = await db.from("sets").select("id").eq("id", foto.set_id).eq("creadora_id", creadoraId).eq("portada_id", id).eq("estado", "publicado").maybeSingle();
+  if (setError) throw setError;
+  if (!set) return null;
+  const { data, error } = await db.storage.from("privado").download(ruta.original(creadoraId, id));
+  if (error) throw error;
+  const semilla = await sharp(Buffer.from(await data.arrayBuffer())).rotate().resize(48, 60, { fit: "cover" }).png().toBuffer();
+  return sharp(semilla).resize(888, 720, { fit: "cover" }).blur(18).webp({ quality: 80 }).toBuffer();
+}
+
 /**
  * Borra una foto que todavía no está en un set enviado. false si no existe, no es suya
  * o ya está en moderación / publicada (ahí se quita desde el set).
