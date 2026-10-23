@@ -6,6 +6,20 @@ Cambios de Veloo, del más reciente al más antiguo. Formato basado en [Keep a C
 
 ### 2026-10-23
 
+#### Perfil público como vitrina
+- Perfil compacto con avatar, nombre, bio y conteo real de sets sobre una composición rosa sólida. El set más reciente tiene portada destacada; los demás se muestran en dos columnas, con título, número de fotos y precio.
+- Se conservan los velos generados en servidor, las rutas de compra, redes, suscripciones y permisos para mensajes. El aviso de nuevos sets lleva encabezado e icono propios con menos texto repetido.
+
+#### Detalle del set y aviso de pago
+- Detalle público con nombre y creadora antes de la portada, marco de vista previa, conteo de fotos y bloque de acceso con iconos. Se retiran los puntos que parecían un carrusel sin serlo.
+- El checkout directo muestra el aviso de prueba solo con configuración de prueba; con llave real indica pago con tarjeta procesado por Stripe. La página pasa únicamente el modo desde servidor, sin exponer llaves. Adrian reportó cobros reales; este cambio de interfaz no verifica transacciones remotas.
+
+#### Mostrar contraseña al escribir
+- Los campos de contraseña incluyen un botón de ojo para mostrar u ocultar lo escrito, oculto inicialmente. Disponible en inicio de sesión, registro y configuración de acceso, con etiqueta accesible y manejo por teclado.
+
+#### Navegación más visible
+- Botón central para crear un set en rosa sólido. La pestaña activa de la creadora tiene fondo rosa suave detrás del icono, icono relleno y etiqueta rosa en negrita.
+
 #### Creación de set más visual
 - Los dos pasos muestran progreso con iconos. Se retiran explicaciones repetidas y se acortan nombres de campos y botones; Fotos, Nombre y Precio indican visualmente qué está listo.
 - La subida destaca el selector de fotos con una ilustración de Phosphor y conserva la etiqueta de portada y la indicación de mantener presionado para ver.

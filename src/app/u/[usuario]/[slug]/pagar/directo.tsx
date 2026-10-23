@@ -8,7 +8,7 @@ import { CasillaEdad } from "@/components/fan/casilla-edad";
 import { precioMXN } from "@/lib/dinero";
 import { pagarDirecto } from "./directo-acciones";
 
-export function PagoDirecto({ setId, titulo, creadora, monto, portada, volver, correoInicial, cancelado }: { setId: string; titulo: string; creadora: string; monto: number; portada: string | null; volver: string; correoInicial: string; cancelado: boolean }) {
+export function PagoDirecto({ setId, titulo, creadora, monto, portada, volver, correoInicial, cancelado, enVivo }: { setId: string; titulo: string; creadora: string; monto: number; portada: string | null; volver: string; correoInicial: string; cancelado: boolean; enVivo: boolean }) {
   const [correo, setCorreo] = useState(correoInicial);
   const [edad, setEdad] = useState(false);
   const [error, setError] = useState<string>();
@@ -22,7 +22,7 @@ export function PagoDirecto({ setId, titulo, creadora, monto, portada, volver, c
       <p className="mx-5 mt-2 text-xs text-muted">Tu compra queda ligada a este correo.</p>
       <div className="px-5 pt-3"><CasillaEdad marcada={edad} onChange={setEdad} /></div>
       <div className="mx-5 mt-5 flex items-baseline justify-between border-t border-line pt-5"><span className="text-sm text-muted">Total</span><strong className="font-display text-[32px] font-semibold">{precioMXN(monto)}</strong></div>
-      <ZonaCTA>{cancelado && <p className="m-0 text-sm text-muted">Saliste de Stripe sin terminar. Puedes volver a intentarlo.</p>}{error && <p role="alert" className="m-0 text-sm text-bad">{error}</p>}<Boton type="submit" disabled={ocupado || !edad} icono={<CreditCardIcon size={20} weight="bold" />}>{ocupado ? "Abriendo Stripe…" : `Pagar ${precioMXN(monto)}`}</Boton><p className="m-0 text-center text-xs text-muted">Pago de prueba con Stripe. No se cobra dinero real.</p></ZonaCTA>
+      <ZonaCTA>{cancelado && <p className="m-0 text-sm text-muted">Saliste de Stripe sin terminar. Puedes volver a intentarlo.</p>}{error && <p role="alert" className="m-0 text-sm text-bad">{error}</p>}<Boton type="submit" disabled={ocupado || !edad} icono={<CreditCardIcon size={20} weight="bold" />}>{ocupado ? "Abriendo Stripe…" : `Pagar ${precioMXN(monto)}`}</Boton><p className="m-0 text-center text-xs text-muted">{enVivo ? "Pago con tarjeta procesado por Stripe." : "Pago de prueba con Stripe. No se cobra dinero real."}</p></ZonaCTA>
     </form>
   </main>;
 }

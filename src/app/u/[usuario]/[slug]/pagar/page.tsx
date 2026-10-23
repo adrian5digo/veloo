@@ -9,6 +9,7 @@ import { supabaseServidor } from "@/server/supabase";
 import { Desbloquear } from "./desbloquear";
 import { Gratis } from "./gratis";
 import { PagoDirecto } from "./directo";
+import { stripeEnVivo } from "@/server/stripe";
 import { cobroDirectoPiloto } from "@/server/piloto";
 
 export const metadata: Metadata = { title: "Desbloquear · Veloo", robots: { index: false } };
@@ -36,7 +37,7 @@ export default async function Page({ params, searchParams }: PageProps<"/u/[usua
     if (!directo) saldo = (await supabase.from("mi_saldo_tokens").select("tokens").maybeSingle()).data?.tokens ?? 0;
   }
 
-  if (directo) return <PagoDirecto setId={set.id} titulo={set.titulo} creadora={perfil.nombre} monto={set.precio} portada={set.portadaId ? urlVelo(set.portadaId, "mini") : null} volver={rutaPublica(usuario, slug)} correoInicial={fan?.correo ?? ""} cancelado={(await searchParams).cancelado === "1"} />;
+  if (directo) return <PagoDirecto enVivo={stripeEnVivo()} setId={set.id} titulo={set.titulo} creadora={perfil.nombre} monto={set.precio} portada={set.portadaId ? urlVelo(set.portadaId, "mini") : null} volver={rutaPublica(usuario, slug)} correoInicial={fan?.correo ?? ""} cancelado={(await searchParams).cancelado === "1"} />;
 
   return (
     <Desbloquear

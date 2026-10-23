@@ -24,11 +24,11 @@ function Pestana({
       href={href}
       aria-current={activa ? "page" : undefined}
       className={cn(
-        "relative flex min-h-11 flex-col items-center justify-center gap-[3px] no-underline",
+        "relative flex min-h-11 flex-col items-center justify-center gap-[3px] rounded-[22px] no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink",
         activa ? "font-bold text-accent-ink! hover:text-accent-ink!" : "font-medium text-muted! hover:text-text!",
       )}
     >
-      {Icono && <Icono weight="bold" size={22} />}
+      {Icono && <span className={cn("grid h-8 w-12 place-items-center rounded-full", activa && "bg-accent-soft")}><Icono weight={activa ? "fill" : "bold"} size={24} aria-hidden /></span>}
       {children}
       {aviso && <span aria-label="Sin leer" className="absolute top-0.5 left-[calc(50%+8px)] size-2 rounded-full bg-accent" />}
     </Link>
@@ -37,7 +37,7 @@ function Pestana({
 
 export type PestanaCreadora = "boveda" | "ventas" | "mensajes" | "perfil";
 
-/** Bóveda · Ventas · [+] · Mensajes · Perfil. El + es sólido ciruela, sin degradado. Retiros vive dentro de Ventas. */
+/** Bóveda · Ventas · [+] · Mensajes · Perfil. El + es rosa sólido. Retiros vive dentro de Ventas. */
 export function BarraCreadora({ activa, base = "/app", sinLeer }: { activa: PestanaCreadora; base?: string; sinLeer?: boolean }) {
   return (
     <nav aria-label="Principal" className={cn(barra, "grid-cols-5")}>
@@ -51,7 +51,7 @@ export function BarraCreadora({ activa, base = "/app", sinLeer }: { activa: Pest
         <Link
           href={`${base}/subir`}
           aria-label="Subir un set"
-          className="grid size-11 place-items-center rounded-full bg-text text-bg! hover:text-bg!"
+          className="grid size-12 place-items-center rounded-full bg-accent text-text! hover:bg-accent-soft hover:text-accent-ink! focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-ink"
         >
           <PlusIcon weight="bold" size={24} />
         </Link>

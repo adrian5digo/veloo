@@ -1,5 +1,7 @@
-import { LockIcon } from "@phosphor-icons/react/dist/ssr";
-import { useId, type ComponentProps, type ReactNode } from "react";
+"use client";
+
+import { EyeIcon, EyeSlashIcon, LockIcon } from "@phosphor-icons/react/dist/ssr";
+import { useId, useState, type ComponentProps, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 const campoBase =
@@ -49,6 +51,8 @@ type CampoProps = Envoltura &
 export function Campo({ label, ayuda, error, className, bloqueado, mono, sufijo, id, ...input }: CampoProps) {
   const autoId = useId();
   const campoId = id ?? autoId;
+  const [visible, setVisible] = useState(false);
+  const esContrasena = input.type === "password";
   return (
     <Etiqueta id={campoId} label={label} ayuda={ayuda} error={error} className={className}>
       <div className="relative">
@@ -63,13 +67,27 @@ export function Campo({ label, ayuda, error, className, bloqueado, mono, sufijo,
             mono && "font-mono text-[15px]",
             bloqueado && "bg-surface-2 text-muted focus:border-line focus:shadow-none",
             bloqueado ? "pr-12" : sufijo != null && "pr-32",
+            esContrasena && (bloqueado || sufijo != null ? "pr-44" : "pr-14"),
           )}
           {...input}
+          type={esContrasena && visible ? "text" : input.type}
         />
         {(bloqueado || sufijo) && (
-          <span className="pointer-events-none absolute inset-y-0 right-[18px] flex items-center text-muted">
+          <span className={cn("pointer-events-none absolute inset-y-0 flex items-center text-muted", esContrasena ? "right-14" : "right-[18px]")}>
             {bloqueado ? <LockIcon weight="bold" size={18} aria-label="Bloqueado" /> : sufijo}
           </span>
+        )}
+        {esContrasena && (
+          <button
+            type="button"
+            aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
+            aria-controls={campoId}
+            disabled={input.disabled}
+            onClick={() => setVisible((anterior) => !anterior)}
+            className="absolute top-1/2 right-1 grid size-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-accent-ink hover:bg-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {visible ? <EyeSlashIcon size={22} weight="bold" aria-hidden /> : <EyeIcon size={22} weight="bold" aria-hidden />}
+          </button>
         )}
       </div>
     </Etiqueta>

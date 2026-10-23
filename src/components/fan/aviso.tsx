@@ -36,7 +36,7 @@ export function Aviso({ creadoraId, nombre, principal }: { creadoraId: string; n
   return (
     <form onSubmit={enviar} className="flex flex-col gap-2.5">
       <Campo
-        label={`Avísame cuando ${nombre} publique`}
+        label="Tu correo"
         type="email"
         inputMode="email"
         autoComplete="email"
@@ -44,7 +44,6 @@ export function Aviso({ creadoraId, nombre, principal }: { creadoraId: string; n
         value={correo}
         onChange={(e) => setCorreo(e.target.value)}
         error={error}
-        ayuda="Un solo correo por set nuevo. Sin cuenta."
         required
       />
       <Boton type="submit" variante={principal ? "primario" : "secundario"} disabled={ocupado || !correo.trim()}>
