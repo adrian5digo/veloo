@@ -12,7 +12,7 @@ export function Galeria({ fotos, correo }: { fotos: { id: string; vista: string 
           className={`relative overflow-hidden bg-surface-2 bg-cover bg-center ${i === 0 ? "col-span-2 h-[250px] rounded-[22px]" : "h-[150px] rounded-[14px]"}`}
           style={f.vista ? { backgroundImage: `url("${f.vista}")` } : undefined}
         >
-          {correo && <MarcaDeAgua correo={correo} tamano={i === 0 ? 12 : 10} />}
+          {correo && <MarcaDeAgua correo={correo} tamano={i === 0 ? 9 : 8} />}
         </div>
       ))}
     </div>

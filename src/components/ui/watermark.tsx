@@ -14,8 +14,8 @@ export function MarcaDeAgua({
   className,
 }: {
   correo: string;
-  /** 10 en miniaturas, 12 en vistas grandes. */
-  tamano?: 10 | 11 | 12;
+  /** Fotos compradas: 8 en miniaturas, 9 en la principal. */
+  tamano?: 8 | 9 | 10 | 11 | 12;
   movil?: boolean;
   className?: string;
 }) {
@@ -28,12 +28,12 @@ export function MarcaDeAgua({
   }, [movil]);
 
   const [x, y] = POSICIONES[paso];
-  const fila = Array.from({ length: 4 }, () => correo).join("    ");
+  const fila = Array.from({ length: 4 }, () => correo).join("                ");
 
   return (
     <div aria-hidden className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}>
       <div
-        className="absolute inset-[-50%] grid place-items-center whitespace-pre font-mono leading-[3] text-white/22"
+        className="absolute inset-[-50%] grid place-items-center whitespace-pre font-mono leading-[6] text-white/22"
         style={{ fontSize: tamano, transform: `translate(${x}%, ${y}%) rotate(-24deg)` }}
       >
         <div>

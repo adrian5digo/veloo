@@ -4,7 +4,21 @@ Cambios de Veloo, del más reciente al más antiguo. Formato basado en [Keep a C
 
 ## [Sin publicar]
 
+### 2026-10-24
+
+#### Marca de agua más pequeña
+- Fotos compradas: el correo pasa de 12 a 9 px en la foto principal y de 10 a 8 px en las pequeñas. Se conserva la opacidad y el mosaico diagonal. La galería compartida también aplica el ajuste al acceso por suscripción.
+- Menos repeticiones visibles: se duplica la separación vertical entre filas y se amplía el espacio horizontal entre correos.
+
 ### 2026-10-23
+
+#### Limpieza de sets de prueba
+- Adrian confirmó que «Playera CR7» también era de prueba: retirado posteriormente mediante `retirar_set()`. Confirmados cero sets publicados para esta creadora.
+- A petición de Adrian, retirados de la venta «prueba», «CR7», «Cr9» y «cr27» mediante `retirar_set()`. Se conservaron sus medios, compras y movimientos. «Playera CR7» permanece publicado; estado confirmado en Supabase.
+
+#### Producción con Stripe real
+- Confirmadas las actualizaciones de `STRIPE_SECRET_KEY` y `STRIPE_WEBHOOK_SECRET` en Vercel. Despliegue `dpl_BhvqpE2JzraaVPnppRiaXLGpNoD8`, commit `0c8b817`, listo en `veloo-vip.vercel.app`, con las mejoras visuales del perfil y detalle del set.
+- Verificado desde el navegador: el checkout directo muestra el texto de pago real y genera una sesión `cs_live_`. No se efectuó ningún cargo durante esta verificación. La firma y el procesamiento del webhook real quedan pendientes de comprobar con una entrega real.
 
 #### Perfil público como vitrina
 - Perfil compacto con avatar, nombre, bio y conteo real de sets sobre una composición rosa sólida. El set más reciente tiene portada destacada; los demás se muestran en dos columnas, con título, número de fotos y precio.
